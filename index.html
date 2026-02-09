@@ -57,7 +57,7 @@
             margin: 0 auto;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"], input[type="password"], input[type="number"] {
             width: 100%;
             padding: 15px;
             margin-bottom: 15px;
@@ -68,7 +68,7 @@
             background: white;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus {
+        input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus {
             outline: none;
             border-color: #c41e3a;
         }
@@ -223,190 +223,256 @@
             border-color: #c41e3a;
         }
 
+        .transformation-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-label:hover {
+            background: rgba(196, 30, 58, 0.1);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
         .clicker-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
         }
 
         .clicker-card {
-            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            background: white;
+            border: 3px solid #999;
             border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s;
+            padding: 15px;
             cursor: pointer;
-            border: 2px solid #999;
+            transition: all 0.3s;
+            text-align: center;
         }
 
         .clicker-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.4);
             border-color: #c41e3a;
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.2);
         }
 
         .clicker-card img {
-            width: 150px;
+            width: 100%;
             height: 150px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 10px;
-            margin-bottom: 15px;
-            border: 2px solid #666;
-        }
-
-        .clicker-name {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
             margin-bottom: 10px;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #999;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 5px;
+        .clicker-card h3 {
+            color: #c41e3a;
+            margin-bottom: 5px;
+            font-size: 18px;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #c41e3a 0%, #8b0000 100%);
-            transition: width 0.3s;
+        .clicker-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .clicker-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c41e3a;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
         }
 
         .game-area {
-            text-align: center;
-            padding: 40px 20px;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        .click-button {
+        .clicker-display {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .clicker-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .clicker-name {
+            font-size: 28px;
+            color: #c41e3a;
+            margin-bottom: 5px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #c41e3a, #8b0000);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #clickButton {
+            position: relative;
             width: 400px;
             height: 400px;
-            margin: 20px auto;
-            position: relative;
+            margin: 0 auto;
             cursor: pointer;
-            transition: transform 0.2s;
+            overflow: hidden;
         }
 
-        .click-button:hover {
-            transform: scale(1.02);
-        }
-
-        .click-button:active {
-            transform: scale(0.98);
-        }
-
-        .click-button img {
+        #clickerCanvas {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 15px;
+            transition: transform 0.1s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #clickerCanvas:active {
+            transform: scale(0.95);
         }
 
         .emoji-effect {
             position: absolute;
             font-size: 40px;
-            animation: float-up 1s ease-out;
             pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
         }
 
-        @keyframes float-up {
-            0% { opacity: 1; transform: translateY(0) scale(0.5); }
-            100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+        @keyframes floatUp {
+            to {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5);
+            }
         }
 
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .stat-item {
-            background: #e0e0e0;
+        .stats-panel {
+            background: white;
+            border-radius: 15px;
             padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: #f5f5f5;
+            padding: 15px;
             border-radius: 10px;
-            min-width: 150px;
-            border: 2px solid #999;
+            text-align: center;
+            border: 2px solid #e0e0e0;
         }
 
-        .stat-label {
-            font-size: 14px;
+        .stat-box h4 {
             color: #666;
+            font-size: 12px;
             margin-bottom: 5px;
+            text-transform: uppercase;
         }
 
-        .stat-value {
-            font-size: 28px;
+        .stat-box .value {
+            font-size: 24px;
             font-weight: bold;
             color: #c41e3a;
         }
 
-        .user-info {
-            text-align: right;
-            margin-bottom: 20px;
-            color: #666;
-        }
-
-        .instruction {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 15px;
+        .progress-bar-container {
+            background: #e0e0e0;
             border-radius: 10px;
-            margin-bottom: 20px;
-            color: #856404;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
         }
 
-        .area-indicator {
-            margin-top: 10px;
-            padding: 10px;
-            background: #ffebee;
-            border-radius: 5px;
-            font-size: 14px;
-            border: 2px solid #c41e3a;
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #c41e3a, #ff6b6b);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .small-btn {
-            width: auto;
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 14px;
-        }
-
-        .level-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
-            color: white;
-            border-radius: 20px;
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 30px;
             font-weight: bold;
-            margin-top: 10px;
+            color: #333;
             font-size: 14px;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #666, #444);
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background: linear-gradient(135deg, #777, #555);
         }
 
         .leaderboard {
-            max-width: 600px;
-            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
         }
 
         .leaderboard-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background: #e0e0e0;
+            padding: 15px;
             margin-bottom: 10px;
+            background: #f5f5f5;
             border-radius: 10px;
-            transition: all 0.3s;
-            border: 2px solid #999;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s;
         }
 
         .leaderboard-item:hover {
-            background: #d0d0d0;
             transform: translateX(5px);
             border-color: #c41e3a;
         }
@@ -415,24 +481,32 @@
             font-size: 24px;
             font-weight: bold;
             color: #c41e3a;
+            margin-right: 15px;
             min-width: 50px;
         }
 
         .player-name {
             flex-grow: 1;
             font-size: 18px;
+            font-weight: 600;
             color: #333;
         }
 
         .score {
-            font-size: 20px;
+            font-size: 16px;
+            color: #666;
             font-weight: bold;
-            color: #8b0000;
+        }
+
+        .admin-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
         }
 
         .user-card {
-            background: #e0e0e0;
-            border: 2px solid #999;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
@@ -441,191 +515,274 @@
         .user-card h4 {
             color: #c41e3a;
             margin-bottom: 10px;
+            font-size: 18px;
         }
 
         .user-clickers {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            display: flex;
             gap: 10px;
+            flex-wrap: wrap;
             margin-top: 10px;
         }
 
         .user-clicker-thumb {
-            width: 100px;
-            height: 100px;
+            width: 60px;
+            height: 60px;
             object-fit: cover;
             border-radius: 8px;
-            border: 2px solid #666;
+            border: 2px solid #999;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .admin-actions button {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .admin-actions .btn-danger {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+
+        .admin-actions .btn-success {
+            background: linear-gradient(135deg, #388e3c, #2e7d32);
+        }
+
+        .admin-actions .btn-info {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+        }
+
+        .admin-actions .btn-warning {
+            background: linear-gradient(135deg, #f57c00, #e65100);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            color: #c41e3a;
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        .message-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .message-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .message-box p {
+            color: #856404;
+        }
+
+        .warning-banner {
+            background: #ffebee;
+            border: 2px solid #ef5350;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .warning-banner h3 {
+            color: #c62828;
+            margin-bottom: 5px;
+        }
+
+        .warning-banner p {
+            color: #c62828;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #999;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #c41e3a;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Login Screen -->
         <div id="loginScreen" class="login-screen">
-            <h1>🎮 custom clicker thing</h1>
+            <h1>🍪 Custom Clicker Maker</h1>
             <div class="login-form">
-                <input type="text" id="usernameInput" placeholder="whats ur name tho" />
+                <input type="text" id="usernameInput" placeholder="username" />
                 <input type="password" id="passwordInput" placeholder="password" />
-                <button onclick="login()">lets go</button>
-                <p id="loginError" style="color: #c41e3a; margin-top: 10px; display: none;"></p>
+                <button onclick="login()">log in</button>
+                <button onclick="showRegister()" style="background: linear-gradient(135deg, #666, #444); margin-top: 10px;">create account</button>
             </div>
         </div>
 
-        <!-- Game Screen -->
         <div id="gameScreen" class="game-screen hidden">
-            <div class="user-info">
-                <span>yo <strong id="currentUser"></strong> 👋</span>
-            </div>
-
+            <div id="adminMessages"></div>
+            
+            <h1>🍪 Clicker Maker</h1>
+            
             <div class="nav-tabs">
-                <button class="nav-tab active" onclick="switchTab('create')">make one</button>
-                <button class="nav-tab" onclick="switchTab('clickers')">ur clickers</button>
-                <button class="nav-tab" onclick="switchTab('leaderboard')">leaderboard</button>
-                <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">admin panel</button>
+                <button class="nav-tab active" onclick="showTab('create')">create</button>
+                <button class="nav-tab" onclick="showTab('play')">play</button>
+                <button class="nav-tab" onclick="showTab('leaderboard')">leaderboard</button>
+                <button class="nav-tab" id="adminTab" onclick="showTab('admin')" style="display: none;">admin 🔧</button>
             </div>
 
-            <!-- Create Tab -->
             <div id="createTab" class="tab-content active">
-                <h2>make ur own clicker fr</h2>
                 <div class="create-form">
-                    <div class="instruction">
-                        📸 upload pic → click n drag the part u want → pick emoji → make it
+                    <h2>make ur clicker</h2>
+                    
+                    <div class="form-group">
+                        <label>clicker name</label>
+                        <input type="text" id="clickerName" placeholder="what u wanna call it" />
                     </div>
 
                     <div class="form-group">
-                        <label>1. name it somethin</label>
-                        <input type="text" id="clickerName" placeholder="like big arms or watever" />
-                    </div>
-
-                    <div class="form-group">
-                        <label>2. upload ur image</label>
+                        <label>upload image</label>
                         <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)" />
                         <div id="imagePreview" class="image-preview"></div>
-                        <div id="areaIndicator" class="area-indicator hidden"></div>
                     </div>
 
                     <div class="form-group">
-                        <label>2b. how many spots</label>
-                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="radio" name="selectionMode" value="single" checked onchange="updateSelectionMode()">
-                                <span>just one</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="radio" name="selectionMode" value="multiple" onchange="updateSelectionMode()">
-                                <span>multiple spots</span>
-                            </label>
-                        </div>
-                        <div id="multipleAreasInfo" class="hidden" style="background: #ffebee; padding: 10px; border-radius: 5px; font-size: 14px; color: #c41e3a;">
-                            💡 draw more boxes for more spots. they'll spread out when they grow
-                            <button class="small-btn" onclick="clearSelections()" style="margin-left: 10px; background: #666;">clear all</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>2c. how should it change</label>
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" id="growthEnabled" checked>
-                                <span>📏 make it bigger</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" id="elongationEnabled">
-                                <span>↕️ stretch it tall</span>
-                            </label>
-                        </div>
-                        <p style="margin-top: 10px; color: #666; font-size: 14px;">
-                            u can pick both if u want lol
-                        </p>
-                    </div>
-
-                    <div class="form-group">
-                        <label>3. pick an emoji (type anything)</label>
+                        <label>emoji (shows when u click)</label>
                         <div class="emoji-picker">
-                            <input type="text" 
-                                   class="emoji-input" 
-                                   id="emojiInput" 
-                                   placeholder="💪" 
-                                   maxlength="2"
-                                   value="💪" />
+                            <input type="text" id="emojiInput" class="emoji-input" placeholder="🍪" maxlength="2" />
                             <div class="emoji-suggestions">
-                                <div class="emoji-option" onclick="setEmoji('💪')">💪</div>
-                                <div class="emoji-option" onclick="setEmoji('⭐')">⭐</div>
-                                <div class="emoji-option" onclick="setEmoji('🔥')">🔥</div>
-                                <div class="emoji-option" onclick="setEmoji('❤️')">❤️</div>
-                                <div class="emoji-option" onclick="setEmoji('👀')">👀</div>
-                                <div class="emoji-option" onclick="setEmoji('🚀')">🚀</div>
-                                <div class="emoji-option" onclick="setEmoji('✨')">✨</div>
-                                <div class="emoji-option" onclick="setEmoji('🎉')">🎉</div>
-                                <div class="emoji-option" onclick="setEmoji('😂')">😂</div>
-                                <div class="emoji-option" onclick="setEmoji('🌟')">🌟</div>
+                                <span class="emoji-option" onclick="selectEmoji('🍪')">🍪</span>
+                                <span class="emoji-option" onclick="selectEmoji('🎮')">🎮</span>
+                                <span class="emoji-option" onclick="selectEmoji('💎')">💎</span>
+                                <span class="emoji-option" onclick="selectEmoji('⭐')">⭐</span>
+                                <span class="emoji-option" onclick="selectEmoji('🔥')">🔥</span>
+                                <span class="emoji-option" onclick="selectEmoji('💰')">💰</span>
                             </div>
                         </div>
-                        <p style="margin-top: 10px; color: #666; font-size: 14px;">
-                            just paste watever emoji u want here
-                        </p>
                     </div>
 
-                    <button onclick="createClicker()">make it! 🎨</button>
+                    <div class="form-group">
+                        <label>how should it grow?</label>
+                        <div class="transformation-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="growthEnabled" checked />
+                                <span>get wider</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="elongationEnabled" />
+                                <span>get taller</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="createClicker()">create clicker 🚀</button>
                 </div>
             </div>
 
-            <!-- Clickers Tab -->
-            <div id="clickersTab" class="tab-content">
-                <div id="clickersList">
-                    <div id="clickerGallery" class="clicker-gallery"></div>
+            <div id="playTab" class="tab-content">
+                <div id="clickerGallery" class="clicker-gallery">
+                    <!-- Clicker cards will be inserted here -->
+                </div>
+
+                <div id="gameArea" class="game-area hidden">
+                    <button class="back-button" onclick="backToGallery()">← back to gallery</button>
                     
-                    <div id="gameArea" class="game-area hidden">
-                        <h2 id="currentClickerName"></h2>
-                        <div id="levelBadge" class="level-badge"></div>
-                        <div id="adminControls" class="hidden" style="margin: 15px 0;">
-                            <button class="small-btn" onclick="adminMaxClicker()" style="background: #c41e3a;">
-                                🔧 ADMIN: max this clicker
-                            </button>
+                    <div class="clicker-display">
+                        <div class="clicker-header">
+                            <h2 class="clicker-name" id="clickerName"></h2>
+                            <span class="level-badge" id="levelBadge">beginner</span>
                         </div>
-                        <div class="click-button" id="clickButton" onclick="handleClick()">
+
+                        <div id="clickButton">
                             <canvas id="clickerCanvas" width="400" height="400"></canvas>
                         </div>
-                        
-                        <div class="stats">
-                            <div class="stat-item">
-                                <div class="stat-label">clicks</div>
-                                <div class="stat-value" id="totalClicks">0</div>
+                    </div>
+
+                    <div class="stats-panel">
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <h4>total clicks</h4>
+                                <div class="value" id="totalClicks">0</div>
                             </div>
-                            <div class="stat-item">
-                                <div class="stat-label">rank</div>
-                                <div class="stat-value" id="currentLevel">noob</div>
+                            <div class="stat-box">
+                                <h4>current level</h4>
+                                <div class="value" id="currentLevel">beginner</div>
                             </div>
-                            <div class="stat-item">
-                                <div class="stat-label">progress</div>
-                                <div class="stat-value" id="growthPercent">0%</div>
+                            <div class="stat-box">
+                                <h4>growth</h4>
+                                <div class="value" id="growthPercent">0%</div>
                             </div>
                         </div>
 
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="levelProgress"></div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="levelProgress" style="width: 0%"></div>
+                            <div class="progress-text" id="progressText">0 / 100 til novice</div>
                         </div>
-                        <p style="margin-top: 10px; color: #666;" id="progressText">0 / 100 til next rank</p>
-
-                        <button class="small-btn" onclick="backToGallery()">back</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Leaderboard Tab -->
             <div id="leaderboardTab" class="tab-content">
-                <h2>🏆 global leaderboard</h2>
-                <div id="leaderboardList" class="leaderboard"></div>
+                <div class="leaderboard">
+                    <h2>🏆 top clickers</h2>
+                    <div id="leaderboardList">
+                        <!-- Leaderboard will be inserted here -->
+                    </div>
+                </div>
             </div>
 
-            <!-- Admin Panel Tab -->
             <div id="adminTab" class="tab-content">
-                <h2>🔧 admin panel</h2>
-                <div id="adminPanel">
-                    <div style="margin-bottom: 20px;">
-                        <h3 style="color: #c41e3a; margin-bottom: 15px;">all users</h3>
-                        <div id="usersList"></div>
+                <div class="admin-panel">
+                    <h2>🔧 admin panel</h2>
+                    <div id="usersList">
+                        <!-- Users will be inserted here -->
                     </div>
                 </div>
             </div>
@@ -633,37 +790,67 @@
     </div>
 
     <script>
-        // User accounts storage - now synced with backend
         let userAccounts = {};
-
         let gameState = {
             username: '',
             isAdmin: false,
-            currentClicker: null,
             clickers: [],
-            totalScore: 0,
-            creationData: {
-                image: null,
-                selectedAreas: [],
-                emoji: '💪',
-                selectionMode: 'single',
-                growthEnabled: true,
-                elongationEnabled: false
-            }
+            currentClicker: null,
+            totalScore: 0
         };
 
-        // Load users from backend on page load
+        let currentImageData = null;
+        let selectedAreas = [];
+        let isSelecting = false;
+        let startX, startY;
+        let currentCanvas, currentCtx;
+
+        // Anti-auto-clicker detection
+        let clickTimes = [];
+        let isAutoClickerDetected = false;
+        let warningCount = 0;
+        const AUTO_CLICKER_THRESHOLD = 10; // clicks per second
+        const WARNING_THRESHOLD = 3; // warnings before ban
+
+        const LEVELS = [
+            { name: 'beginner', clicks: 0 },
+            { name: 'novice', clicks: 100 },
+            { name: 'amateur', clicks: 300 },
+            { name: 'skilled', clicks: 600 },
+            { name: 'experienced', clicks: 1000 },
+            { name: 'expert', clicks: 1500 },
+            { name: 'master', clicks: 2100 },
+            { name: 'grandmaster', clicks: 2800 },
+            { name: 'legend', clicks: 3600 },
+            { name: 'mythic', clicks: 4500 }
+        ];
+
+        function getCurrentLevel(clicks) {
+            for (let i = LEVELS.length - 1; i >= 0; i--) {
+                if (clicks >= LEVELS[i].clicks) {
+                    return { ...LEVELS[i], index: i };
+                }
+            }
+            return { ...LEVELS[0], index: 0 };
+        }
+
+        function getNextLevel(currentIndex) {
+            if (currentIndex < LEVELS.length - 1) {
+                return LEVELS[currentIndex + 1];
+            }
+            return null;
+        }
+
         async function loadUsersFromBackend() {
             try {
                 const response = await fetch('/api/users');
-                const users = await response.json();
-                userAccounts = users;
+                const data = await response.json();
+                userAccounts = data;
             } catch (err) {
                 console.error('failed to load users:', err);
             }
         }
 
-        // Save users to backend
         async function saveUsersToBackend() {
             try {
                 await fetch('/api/users', {
@@ -676,30 +863,31 @@
             }
         }
 
-        // Auto-login on page load
         async function tryAutoLogin() {
-            const savedUsername = localStorage.getItem('currentUser');
-            if (savedUsername) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('user');
+            
+            if (username) {
                 try {
-                    const response = await fetch(`/api/auto-login?username=${encodeURIComponent(savedUsername)}`);
+                    const response = await fetch(`/api/auto-login?username=${encodeURIComponent(username)}`);
                     const data = await response.json();
                     
                     if (data.success) {
                         gameState.username = data.user.username;
                         gameState.isAdmin = data.user.isAdmin;
-                        gameState.clickers = data.user.clickers || [];
-                        gameState.totalScore = data.user.totalScore || 0;
+                        gameState.clickers = data.user.clickers;
+                        gameState.totalScore = data.user.totalScore;
                         
-                        document.getElementById('currentUser').textContent = gameState.username;
                         document.getElementById('loginScreen').classList.add('hidden');
                         document.getElementById('gameScreen').classList.remove('hidden');
                         
-                        // Show admin tab if admin
                         if (gameState.isAdmin) {
                             document.getElementById('adminTab').style.display = 'block';
                         }
                         
                         renderClickerGallery();
+                        updateLeaderboard();
+                        checkAdminMessages();
                     }
                 } catch (err) {
                     console.error('auto-login failed:', err);
@@ -707,148 +895,99 @@
             }
         }
 
-        // Initialize on page load
-        window.addEventListener('DOMContentLoaded', async () => {
-            await loadUsersFromBackend();
-            await tryAutoLogin();
-        });
-
-        // Level system with casual names
-        const LEVELS = [
-            { name: 'click noob', clicks: 0 },
-            { name: 'ok clicker', clicks: 100 },
-            { name: 'good clicker', clicks: 300 },
-            { name: 'pro clicker', clicks: 600 },
-            { name: 'jeeth level', clicks: 1000 },
-            { name: 'ultra fingerer', clicks: 1500 }
-        ];
-
-        function getCurrentLevel(clicks) {
-            for (let i = LEVELS.length - 1; i >= 0; i--) {
-                if (clicks >= LEVELS[i].clicks) {
-                    return { index: i, ...LEVELS[i] };
-                }
-            }
-            return { index: 0, ...LEVELS[0] };
-        }
-
-        function getNextLevel(currentIndex) {
-            if (currentIndex < LEVELS.length - 1) {
-                return LEVELS[currentIndex + 1];
-            }
-            return null;
-        }
-
-        let isSelecting = false;
-        let selectionStart = { x: 0, y: 0 };
-        let selectionEnd = { x: 0, y: 0 };
-
-        function updateSelectionMode() {
-            const mode = document.querySelector('input[name="selectionMode"]:checked').value;
-            gameState.creationData.selectionMode = mode;
-            
-            const info = document.getElementById('multipleAreasInfo');
-            if (mode === 'multiple') {
-                info.classList.remove('hidden');
-            } else {
-                info.classList.add('hidden');
-                if (gameState.creationData.selectedAreas.length > 1) {
-                    gameState.creationData.selectedAreas = [gameState.creationData.selectedAreas[gameState.creationData.selectedAreas.length - 1]];
-                    redrawAllSelections();
-                }
-            }
-        }
-
-        function clearSelections() {
-            gameState.creationData.selectedAreas = [];
-            const canvas = document.getElementById('selectionCanvas');
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-            const indicator = document.getElementById('areaIndicator');
-            indicator.classList.add('hidden');
-        }
-
-        function login() {
+        async function login() {
             const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
-            const errorEl = document.getElementById('loginError');
             
             if (!username || !password) {
-                errorEl.textContent = 'gotta fill both fields bro';
-                errorEl.style.display = 'block';
+                alert('fill in both fields bro');
+                return;
+            }
+
+            await loadUsersFromBackend();
+            
+            if (!userAccounts[username]) {
+                alert('username not found');
                 return;
             }
             
-            // Check if username exists
-            if (userAccounts[username]) {
-                // Username exists, check password
-                if (userAccounts[username].password === password) {
-                    // Correct password - load user data
-                    gameState.username = username;
-                    gameState.isAdmin = userAccounts[username].isAdmin || false;
-                    gameState.clickers = userAccounts[username].clickers || [];
-                    gameState.totalScore = userAccounts[username].totalScore || 0;
-                    
-                    // Save to localStorage for auto-login
-                    localStorage.setItem('currentUser', username);
-                    
-                    document.getElementById('currentUser').textContent = username;
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('gameScreen').classList.remove('hidden');
-                    
-                    // Show admin tab if admin
-                    if (gameState.isAdmin) {
-                        document.getElementById('adminTab').style.display = 'block';
-                    }
-                    
-                    renderClickerGallery();
-                } else {
-                    // Wrong password
-                    errorEl.textContent = 'dumby';
-                    errorEl.style.display = 'block';
-                }
-            } else {
-                // New username - create account
-                userAccounts[username] = { 
-                    password: password, 
-                    isAdmin: false,
-                    clickers: [],
-                    totalScore: 0
-                };
-                
-                // Save to backend
-                saveUsersToBackend();
-                
-                gameState.username = username;
-                gameState.isAdmin = false;
-                gameState.clickers = [];
-                gameState.totalScore = 0;
-                
-                // Save to localStorage for auto-login
-                localStorage.setItem('currentUser', username);
-                
-                document.getElementById('currentUser').textContent = username;
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('gameScreen').classList.remove('hidden');
-                
-                renderClickerGallery();
+            if (userAccounts[username].password !== password) {
+                alert('wrong password');
+                return;
             }
+
+            // Check if user is banned
+            if (userAccounts[username].banned) {
+                alert('⛔ You have been banned from the game for using auto-clicker!');
+                return;
+            }
+            
+            gameState.username = username;
+            gameState.isAdmin = userAccounts[username].isAdmin || false;
+            gameState.clickers = userAccounts[username].clickers || [];
+            gameState.totalScore = userAccounts[username].totalScore || 0;
+            
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            
+            if (gameState.isAdmin) {
+                document.getElementById('adminTab').style.display = 'block';
+            }
+            
+            renderClickerGallery();
+            updateLeaderboard();
+            checkAdminMessages();
+            
+            window.history.pushState({}, '', `?user=${username}`);
         }
 
-        function switchTab(tab) {
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        function showRegister() {
+            const username = prompt('choose a username:');
+            if (!username) return;
             
-            event.target.classList.add('active');
-            document.getElementById(tab + 'Tab').classList.add('active');
+            if (userAccounts[username]) {
+                alert('username already taken');
+                return;
+            }
             
-            if (tab === 'clickers') {
+            const password = prompt('choose a password:');
+            if (!password) return;
+            
+            userAccounts[username] = {
+                password: password,
+                isAdmin: false,
+                clickers: [],
+                totalScore: 0,
+                messages: []
+            };
+            
+            saveUsersToBackend();
+            alert('account created! u can log in now');
+        }
+
+        function showTab(tabName) {
+            const tabs = ['create', 'play', 'leaderboard', 'admin'];
+            tabs.forEach(tab => {
+                document.getElementById(`${tab}Tab`).classList.remove('active');
+                document.querySelectorAll('.nav-tab').forEach(navTab => {
+                    if (navTab.textContent.includes(tab)) {
+                        navTab.classList.remove('active');
+                    }
+                });
+            });
+            
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+            document.querySelectorAll('.nav-tab').forEach(navTab => {
+                if (navTab.textContent.includes(tabName)) {
+                    navTab.classList.add('active');
+                }
+            });
+            
+            if (tabName === 'play') {
                 renderClickerGallery();
-            } else if (tab === 'leaderboard') {
+            } else if (tabName === 'leaderboard') {
                 updateLeaderboard();
-            } else if (tab === 'admin') {
+            } else if (tabName === 'admin') {
                 renderAdminPanel();
             }
         }
@@ -856,215 +995,154 @@
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
+            
             const reader = new FileReader();
             reader.onload = function(e) {
-                gameState.creationData.image = e.target.result;
-                
-                const preview = document.getElementById('imagePreview');
-                preview.innerHTML = `
-                    <div class="image-preview-container" id="previewContainer">
-                        <img id="previewImg" src="${e.target.result}" />
-                        <canvas id="selectionCanvas" class="selection-canvas"></canvas>
-                    </div>
-                    <p style="margin-top: 15px; color: #c41e3a; font-weight: 600;">
-                        ✨ click n drag to pick the part ✨
-                    </p>
-                    <p style="margin-top: 5px; color: #666; font-size: 14px;">
-                        rest of the pic gets darker so u can see better
-                    </p>
-                `;
-
-                const img = document.getElementById('previewImg');
-                const canvas = document.getElementById('selectionCanvas');
-                
-                img.onload = function() {
-                    canvas.width = img.offsetWidth;
-                    canvas.height = img.offsetHeight;
-                    
-                    canvas.addEventListener('mousedown', startSelection);
-                    canvas.addEventListener('mousemove', updateSelection);
-                    canvas.addEventListener('mouseup', endSelection);
-                    canvas.addEventListener('mouseleave', endSelection);
-                };
+                currentImageData = e.target.result;
+                displayImageForSelection(e.target.result);
             };
             reader.readAsDataURL(file);
         }
 
+        function displayImageForSelection(imageSrc) {
+            const preview = document.getElementById('imagePreview');
+            const container = document.createElement('div');
+            container.className = 'image-preview-container';
+            
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.className = 'selection-canvas';
+                canvas.width = img.width;
+                canvas.height = img.height;
+                canvas.style.width = img.offsetWidth + 'px';
+                canvas.style.height = img.offsetHeight + 'px';
+                
+                currentCanvas = canvas;
+                currentCtx = canvas.getContext('2d');
+                
+                canvas.addEventListener('mousedown', startSelection);
+                canvas.addEventListener('mousemove', updateSelection);
+                canvas.addEventListener('mouseup', endSelection);
+                
+                container.appendChild(img);
+                container.appendChild(canvas);
+                preview.innerHTML = '';
+                preview.appendChild(container);
+                
+                const info = document.createElement('p');
+                info.style.marginTop = '10px';
+                info.style.color = '#666';
+                info.textContent = 'drag on the image to select the clickable area (can select multiple)';
+                preview.appendChild(info);
+            };
+        }
+
         function startSelection(e) {
             isSelecting = true;
-            const rect = e.target.getBoundingClientRect();
-            selectionStart = {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            };
-            selectionEnd = { ...selectionStart };
-            drawSelection();
+            const rect = currentCanvas.getBoundingClientRect();
+            startX = (e.clientX - rect.left) / rect.width;
+            startY = (e.clientY - rect.top) / rect.height;
         }
 
         function updateSelection(e) {
             if (!isSelecting) return;
             
-            const rect = e.target.getBoundingClientRect();
-            selectionEnd = {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            };
-            drawSelection();
+            const rect = currentCanvas.getBoundingClientRect();
+            const currentX = (e.clientX - rect.left) / rect.width;
+            const currentY = (e.clientY - rect.top) / rect.height;
+            
+            currentCtx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
+            
+            selectedAreas.forEach(area => {
+                currentCtx.strokeStyle = 'rgba(196, 30, 58, 0.8)';
+                currentCtx.lineWidth = 3;
+                currentCtx.strokeRect(
+                    area.x * currentCanvas.width,
+                    area.y * currentCanvas.height,
+                    area.width * currentCanvas.width,
+                    area.height * currentCanvas.height
+                );
+            });
+            
+            currentCtx.strokeStyle = 'rgba(196, 30, 58, 0.8)';
+            currentCtx.lineWidth = 3;
+            currentCtx.strokeRect(
+                startX * currentCanvas.width,
+                startY * currentCanvas.height,
+                (currentX - startX) * currentCanvas.width,
+                (currentY - startY) * currentCanvas.height
+            );
         }
 
         function endSelection(e) {
             if (!isSelecting) return;
             isSelecting = false;
             
-            const canvas = document.getElementById('selectionCanvas');
-            const width = Math.abs(selectionEnd.x - selectionStart.x);
-            const height = Math.abs(selectionEnd.y - selectionStart.y);
+            const rect = currentCanvas.getBoundingClientRect();
+            const endX = (e.clientX - rect.left) / rect.width;
+            const endY = (e.clientY - rect.top) / rect.height;
             
-            if (width > 10 && height > 10) {
-                const newArea = {
-                    x: Math.min(selectionStart.x, selectionEnd.x) / canvas.width,
-                    y: Math.min(selectionStart.y, selectionEnd.y) / canvas.height,
-                    width: width / canvas.width,
-                    height: height / canvas.height
-                };
+            const width = Math.abs(endX - startX);
+            const height = Math.abs(endY - startY);
+            
+            if (width > 0.02 && height > 0.02) {
+                selectedAreas.push({
+                    x: Math.min(startX, endX),
+                    y: Math.min(startY, endY),
+                    width: width,
+                    height: height
+                });
                 
-                if (gameState.creationData.selectionMode === 'single') {
-                    gameState.creationData.selectedAreas = [newArea];
-                } else {
-                    gameState.creationData.selectedAreas.push(newArea);
-                }
-                
-                redrawAllSelections();
-                
-                const indicator = document.getElementById('areaIndicator');
-                indicator.classList.remove('hidden');
-                const count = gameState.creationData.selectedAreas.length;
-                indicator.innerHTML = `✅ <strong>${count} spot${count > 1 ? 's' : ''} picked!</strong> ${count > 1 ? 'all of em' : 'this one'} gonna change when u click`;
+                currentCtx.strokeStyle = 'rgba(196, 30, 58, 0.8)';
+                currentCtx.lineWidth = 3;
+                currentCtx.strokeRect(
+                    Math.min(startX, endX) * currentCanvas.width,
+                    Math.min(startY, endY) * currentCanvas.height,
+                    width * currentCanvas.width,
+                    height * currentCanvas.height
+                );
             }
         }
 
-        function redrawAllSelections() {
-            const canvas = document.getElementById('selectionCanvas');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            gameState.creationData.selectedAreas.forEach(area => {
-                const x = area.x * canvas.width;
-                const y = area.y * canvas.height;
-                const width = area.width * canvas.width;
-                const height = area.height * canvas.height;
-                
-                ctx.clearRect(x, y, width, height);
-                
-                ctx.strokeStyle = '#c41e3a';
-                ctx.lineWidth = 3;
-                ctx.setLineDash([10, 5]);
-                ctx.strokeRect(x, y, width, height);
-                
-                const handleSize = 10;
-                ctx.fillStyle = '#c41e3a';
-                ctx.setLineDash([]);
-                ctx.fillRect(x - handleSize/2, y - handleSize/2, handleSize, handleSize);
-                ctx.fillRect(x + width - handleSize/2, y - handleSize/2, handleSize, handleSize);
-                ctx.fillRect(x - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
-                ctx.fillRect(x + width - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
-            });
-        }
-
-        function drawSelection() {
-            const canvas = document.getElementById('selectionCanvas');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            gameState.creationData.selectedAreas.forEach(area => {
-                const x = area.x * canvas.width;
-                const y = area.y * canvas.height;
-                const width = area.width * canvas.width;
-                const height = area.height * canvas.height;
-                
-                ctx.clearRect(x, y, width, height);
-                
-                ctx.strokeStyle = '#c41e3a';
-                ctx.lineWidth = 3;
-                ctx.setLineDash([10, 5]);
-                ctx.strokeRect(x, y, width, height);
-            });
-            
-            const x = Math.min(selectionStart.x, selectionEnd.x);
-            const y = Math.min(selectionStart.y, selectionEnd.y);
-            const width = Math.abs(selectionEnd.x - selectionStart.x);
-            const height = Math.abs(selectionEnd.y - selectionStart.y);
-            
-            ctx.clearRect(x, y, width, height);
-            
-            ctx.strokeStyle = '#c41e3a';
-            ctx.lineWidth = 3;
-            ctx.setLineDash([10, 5]);
-            ctx.strokeRect(x, y, width, height);
-            
-            const handleSize = 10;
-            ctx.fillStyle = '#c41e3a';
-            ctx.setLineDash([]);
-            
-            ctx.fillRect(x - handleSize/2, y - handleSize/2, handleSize, handleSize);
-            ctx.fillRect(x + width - handleSize/2, y - handleSize/2, handleSize, handleSize);
-            ctx.fillRect(x - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
-            ctx.fillRect(x + width - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
-        }
-
-        function setEmoji(emoji) {
+        function selectEmoji(emoji) {
             document.getElementById('emojiInput').value = emoji;
-            gameState.creationData.emoji = emoji;
         }
 
         function createClicker() {
             const name = document.getElementById('clickerName').value.trim();
-            const emoji = document.getElementById('emojiInput').value.trim();
+            const emoji = document.getElementById('emojiInput').value || '🍪';
+            
+            if (!name) {
+                alert('gimme a name for ur clicker');
+                return;
+            }
+            
+            if (!currentImageData) {
+                alert('upload an image first');
+                return;
+            }
+            
+            if (selectedAreas.length === 0) {
+                alert('select at least one clickable area on the image');
+                return;
+            }
+            
             const growthEnabled = document.getElementById('growthEnabled').checked;
             const elongationEnabled = document.getElementById('elongationEnabled').checked;
             
-            if (!name) {
-                alert('u gotta name it somethin');
-                return;
-            }
-            
-            if (!gameState.creationData.image) {
-                alert('need a pic bro');
-                return;
-            }
-            
-            if (gameState.creationData.selectedAreas.length === 0) {
-                alert('pick a spot on the image first!');
-                return;
-            }
-            
-            if (!emoji) {
-                alert('pick an emoji dawg');
-                return;
-            }
-            
             if (!growthEnabled && !elongationEnabled) {
-                alert('gotta enable atleast one thing to change!');
+                alert('u gotta enable at least one growth option');
                 return;
             }
             
-            const clicker = {
-                id: Date.now().toString(),
+            const newClicker = {
+                id: Date.now(),
                 name: name,
-                image: gameState.creationData.image,
-                selectedAreas: [...gameState.creationData.selectedAreas],
+                image: currentImageData,
                 emoji: emoji,
+                selectedAreas: selectedAreas,
                 growthEnabled: growthEnabled,
                 elongationEnabled: elongationEnabled,
                 clicks: 0,
@@ -1072,160 +1150,67 @@
                 maxLevel: 20
             };
             
-            gameState.clickers.unshift(clicker);
+            gameState.clickers.push(newClicker);
             
-            // Save to user account and backend
             if (userAccounts[gameState.username]) {
                 userAccounts[gameState.username].clickers = gameState.clickers;
                 saveUsersToBackend();
             }
             
             document.getElementById('clickerName').value = '';
+            document.getElementById('emojiInput').value = '';
             document.getElementById('imageUpload').value = '';
             document.getElementById('imagePreview').innerHTML = '';
-            document.getElementById('areaIndicator').classList.add('hidden');
-            document.getElementById('emojiInput').value = '💪';
-            document.getElementById('growthEnabled').checked = true;
-            document.getElementById('elongationEnabled').checked = false;
-            document.querySelector('input[name="selectionMode"][value="single"]').checked = true;
-            updateSelectionMode();
-            gameState.creationData = { 
-                image: null, 
-                selectedAreas: [], 
-                emoji: '💪',
-                selectionMode: 'single',
-                growthEnabled: true,
-                elongationEnabled: false
-            };
+            currentImageData = null;
+            selectedAreas = [];
             
-            alert(`🎉 "${name}" made successfully bro!`);
-            switchTab('clickers');
+            alert('clicker created! check it out in the play tab 🎮');
+            showTab('play');
         }
 
         function renderClickerGallery() {
             const gallery = document.getElementById('clickerGallery');
             
             if (gameState.clickers.length === 0) {
-                gallery.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">no clickers yet. go make one in the "make one" tab</p>';
+                gallery.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">no clickers yet. make one in the create tab!</p>';
                 return;
             }
             
             gallery.innerHTML = gameState.clickers.map(clicker => {
-                const transformTypes = [];
-                if (clicker.growthEnabled) transformTypes.push('📏 bigger');
-                if (clicker.elongationEnabled) transformTypes.push('↕️ taller');
-                const transformText = transformTypes.join(' + ');
-                
                 const levelInfo = getCurrentLevel(clicker.clicks);
-                
                 return `
-                <div class="clicker-card" onclick="selectClicker('${clicker.id}')">
-                    <img src="${clicker.image}" />
-                    <div class="clicker-name">${clicker.name}</div>
-                    <div style="font-size: 13px; color: #666; margin: 5px 0;">
-                        ${clicker.emoji} • ${clicker.selectedAreas.length} spot${clicker.selectedAreas.length > 1 ? 's' : ''}
+                    <div class="clicker-card" onclick="playClicker(${clicker.id})">
+                        <img src="${clicker.image}" alt="${clicker.name}" />
+                        <h3>${clicker.name}</h3>
+                        <p>${clicker.emoji}</p>
+                        <div class="clicker-stats">
+                            <div class="stat">
+                                <div class="stat-value">${clicker.clicks}</div>
+                                <div class="stat-label">clicks</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${levelInfo.name}</div>
+                                <div class="stat-label">level</div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="font-size: 12px; color: #888;">
-                        ${transformText}
-                    </div>
-                    <div class="level-badge" style="margin-top: 10px; font-size: 12px;">
-                        ${levelInfo.name}
-                    </div>
-                    <div style="font-size: 14px; color: #666; margin-top: 5px;">
-                        ${clicker.clicks} clicks
-                    </div>
-                </div>
-            `}).join('');
+                `;
+            }).join('');
         }
 
-        function selectClicker(clickerId) {
+        function playClicker(clickerId) {
             gameState.currentClicker = clickerId;
             const clicker = gameState.clickers.find(c => c.id === clickerId);
             
             document.getElementById('clickerGallery').classList.add('hidden');
             document.getElementById('gameArea').classList.remove('hidden');
-            document.getElementById('currentClickerName').textContent = clicker.name;
             
-            // Show admin controls if user is admin
-            if (gameState.isAdmin) {
-                document.getElementById('adminControls').classList.remove('hidden');
-            } else {
-                document.getElementById('adminControls').classList.add('hidden');
-            }
-            
-            drawClicker();
-            updateGameDisplay();
-        }
-
-        function adminMaxClicker() {
-            if (!gameState.isAdmin || !gameState.currentClicker) return;
-            
-            const clicker = gameState.clickers.find(c => c.id === gameState.currentClicker);
-            clicker.level = clicker.maxLevel;
-            clicker.clicks = 2000; // Set high click count
-            
-            // Save to user account and backend
-            if (userAccounts[gameState.username]) {
-                userAccounts[gameState.username].clickers = gameState.clickers;
-                saveUsersToBackend();
-            }
+            document.querySelector('.clicker-name').textContent = clicker.name;
             
             drawClicker();
             updateGameDisplay();
             
-            alert('maxed out for testing 🔧');
-        }
-
-        function updateLeaderboard() {
-            const leaderboardList = document.getElementById('leaderboardList');
-            
-            // Get all users and sort by total score
-            const allUsers = Object.keys(userAccounts).map(username => ({
-                name: username,
-                score: userAccounts[username].totalScore || 0
-            })).sort((a, b) => b.score - a.score);
-            
-            leaderboardList.innerHTML = allUsers.map((player, index) => `
-                <div class="leaderboard-item" style="${player.name === gameState.username ? 'background: #ffebee; border-color: #c41e3a;' : ''}">
-                    <div class="rank">#${index + 1}</div>
-                    <div class="player-name">${player.name}${player.name === gameState.username ? ' (u)' : ''}</div>
-                    <div class="score">${player.score.toLocaleString()} clicks</div>
-                </div>
-            `).join('');
-        }
-
-        function renderAdminPanel() {
-            if (!gameState.isAdmin) return;
-            
-            const usersList = document.getElementById('usersList');
-            
-            const allUsers = Object.keys(userAccounts).map(username => ({
-                username: username,
-                data: userAccounts[username]
-            }));
-            
-            usersList.innerHTML = allUsers.map(user => {
-                const clickerCount = (user.data.clickers || []).length;
-                const totalScore = user.data.totalScore || 0;
-                
-                return `
-                    <div class="user-card">
-                        <h4>${user.username} ${user.data.isAdmin ? '🔧' : ''}</h4>
-                        <p style="color: #666; margin-bottom: 10px;">
-                            ${clickerCount} clickers • ${totalScore} total clicks
-                        </p>
-                        ${clickerCount > 0 ? `
-                            <div class="user-clickers">
-                                ${user.data.clickers.map(clicker => `
-                                    <img src="${clicker.image}" 
-                                         class="user-clicker-thumb" 
-                                         title="${clicker.name} (${clicker.clicks} clicks)" />
-                                `).join('')}
-                            </div>
-                        ` : '<p style="color: #999; font-style: italic;">no clickers yet</p>'}
-                    </div>
-                `;
-            }).join('');
+            document.getElementById('clickButton').onclick = handleClick;
         }
 
         function drawClicker() {
@@ -1241,9 +1226,8 @@
                 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 
-                // Calculate spreading factor for multiple areas
                 const spreadFactor = clicker.selectedAreas.length > 1 ? 
-                    (clicker.level / clicker.maxLevel) * 0.3 : 0; // Up to 30% spread
+                    (clicker.level / clicker.maxLevel) * 0.3 : 0;
                 
                 clicker.selectedAreas.forEach((area, index) => {
                     let widthFactor = 1;
@@ -1260,19 +1244,15 @@
                         heightFactor += elongationAmount;
                     }
                     
-                    // Calculate center point of the area
                     let centerX = (area.x + area.width / 2) * canvas.width;
                     let centerY = (area.y + area.height / 2) * canvas.height;
                     
-                    // Apply spreading if multiple areas
                     if (clicker.selectedAreas.length > 1 && clicker.level > 0) {
-                        // Calculate overall center of all areas
                         const overallCenterX = clicker.selectedAreas.reduce((sum, a) => 
                             sum + (a.x + a.width / 2), 0) / clicker.selectedAreas.length * canvas.width;
                         const overallCenterY = clicker.selectedAreas.reduce((sum, a) => 
                             sum + (a.y + a.height / 2), 0) / clicker.selectedAreas.length * canvas.height;
                         
-                        // Push area away from overall center
                         const dx = centerX - overallCenterX;
                         const dy = centerY - overallCenterY;
                         centerX += dx * spreadFactor;
@@ -1282,7 +1262,6 @@
                     const areaWidth = area.width * canvas.width;
                     const areaHeight = area.height * canvas.height;
                     
-                    // Get original position for extraction
                     const origX = area.x * canvas.width;
                     const origY = area.y * canvas.height;
                     
@@ -1297,7 +1276,6 @@
                     const tempCtx = tempCanvas.getContext('2d');
                     tempCtx.putImageData(selectedPart, 0, 0);
                     
-                    // Draw centered on the (potentially spread) center point
                     ctx.drawImage(tempCanvas, 
                         centerX - newWidth / 2, 
                         centerY - newHeight / 2, 
@@ -1308,15 +1286,54 @@
             img.src = clicker.image;
         }
 
+        function detectAutoClicker() {
+            const now = Date.now();
+            clickTimes.push(now);
+            
+            // Keep only clicks from the last second
+            clickTimes = clickTimes.filter(time => now - time < 1000);
+            
+            // If more than threshold clicks in 1 second
+            if (clickTimes.length > AUTO_CLICKER_THRESHOLD) {
+                warningCount++;
+                
+                if (warningCount >= WARNING_THRESHOLD) {
+                    // Ban the user
+                    if (userAccounts[gameState.username]) {
+                        userAccounts[gameState.username].banned = true;
+                        saveUsersToBackend();
+                    }
+                    
+                    alert('⛔ AUTO-CLICKER DETECTED!\n\nYou have been permanently banned from the game for using auto-clicker software.\n\nThis is your ' + WARNING_THRESHOLD + ' warning.');
+                    
+                    // Redirect to login
+                    window.location.href = '/';
+                    return true;
+                } else {
+                    alert('⚠️ WARNING #' + warningCount + '\n\nAuto-clicker detected! You are clicking suspiciously fast (' + clickTimes.length + ' clicks/second).\n\n' + (WARNING_THRESHOLD - warningCount) + ' more warnings and you will be banned!');
+                    
+                    // Reset click times
+                    clickTimes = [];
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
         function handleClick() {
             if (!gameState.currentClicker) return;
+            
+            // Check for auto-clicker
+            if (detectAutoClicker()) {
+                return;
+            }
             
             const clicker = gameState.clickers.find(c => c.id === gameState.currentClicker);
             
             clicker.clicks += 1;
             gameState.totalScore += 1;
             
-            // Save to user account and backend
             if (userAccounts[gameState.username]) {
                 userAccounts[gameState.username].clickers = gameState.clickers;
                 userAccounts[gameState.username].totalScore = gameState.totalScore;
@@ -1382,6 +1399,167 @@
             document.getElementById('gameArea').classList.add('hidden');
             renderClickerGallery();
         }
+
+        function updateLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            
+            const allUsers = Object.keys(userAccounts).map(username => ({
+                name: username,
+                score: userAccounts[username].totalScore || 0,
+                banned: userAccounts[username].banned || false
+            })).sort((a, b) => b.score - a.score);
+            
+            leaderboardList.innerHTML = allUsers.map((player, index) => `
+                <div class="leaderboard-item" style="${player.name === gameState.username ? 'background: #ffebee; border-color: #c41e3a;' : ''}">
+                    <div class="rank">#${index + 1}</div>
+                    <div class="player-name">${player.name}${player.name === gameState.username ? ' (u)' : ''}${player.banned ? ' ⛔' : ''}</div>
+                    <div class="score">${player.score.toLocaleString()} clicks</div>
+                </div>
+            `).join('');
+        }
+
+        function checkAdminMessages() {
+            const messagesContainer = document.getElementById('adminMessages');
+            
+            if (userAccounts[gameState.username] && userAccounts[gameState.username].messages && userAccounts[gameState.username].messages.length > 0) {
+                const messages = userAccounts[gameState.username].messages;
+                
+                messagesContainer.innerHTML = messages.map((msg, index) => `
+                    <div class="message-box">
+                        <h4>📩 Message from Admin</h4>
+                        <p>${msg}</p>
+                        <button onclick="dismissMessage(${index})" style="margin-top: 10px; background: linear-gradient(135deg, #666, #444);">Dismiss</button>
+                    </div>
+                `).join('');
+            } else {
+                messagesContainer.innerHTML = '';
+            }
+        }
+
+        function dismissMessage(index) {
+            if (userAccounts[gameState.username]) {
+                userAccounts[gameState.username].messages.splice(index, 1);
+                saveUsersToBackend();
+                checkAdminMessages();
+            }
+        }
+
+        function renderAdminPanel() {
+            if (!gameState.isAdmin) return;
+            
+            const usersList = document.getElementById('usersList');
+            
+            const allUsers = Object.keys(userAccounts).map(username => ({
+                username: username,
+                data: userAccounts[username]
+            }));
+            
+            usersList.innerHTML = allUsers.map(user => {
+                const clickerCount = (user.data.clickers || []).length;
+                const totalScore = user.data.totalScore || 0;
+                const isAdmin = user.data.isAdmin || false;
+                const isBanned = user.data.banned || false;
+                
+                return `
+                    <div class="user-card">
+                        <h4>${user.username} ${isAdmin ? '🔧' : ''} ${isBanned ? '⛔' : ''}</h4>
+                        <p style="color: #666; margin-bottom: 10px;">
+                            ${clickerCount} clickers • ${totalScore} total clicks
+                        </p>
+                        ${clickerCount > 0 ? `
+                            <div class="user-clickers">
+                                ${user.data.clickers.map(clicker => `
+                                    <img src="${clicker.image}" 
+                                         class="user-clicker-thumb" 
+                                         title="${clicker.name} (${clicker.clicks} clicks)" />
+                                `).join('')}
+                            </div>
+                        ` : '<p style="color: #999; font-style: italic;">no clickers yet</p>'}
+                        
+                        <div class="admin-actions">
+                            <button class="btn-info" onclick="adjustPoints('${user.username}', 'add')">➕ Add Points</button>
+                            <button class="btn-danger" onclick="adjustPoints('${user.username}', 'subtract')">➖ Remove Points</button>
+                            <button class="btn-warning" onclick="sendAdminMessage('${user.username}')">📩 Send Message</button>
+                            ${!isAdmin ? 
+                                `<button class="btn-success" onclick="toggleAdmin('${user.username}', true)">🔧 Make Admin</button>` :
+                                `<button class="btn-danger" onclick="toggleAdmin('${user.username}', false)">❌ Remove Admin</button>`
+                            }
+                            ${!isBanned ?
+                                `<button class="btn-danger" onclick="banUser('${user.username}', true)">⛔ Ban User</button>` :
+                                `<button class="btn-success" onclick="banUser('${user.username}', false)">✅ Unban User</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function adjustPoints(username, action) {
+            const amount = prompt(`How many points to ${action}?`);
+            if (!amount || isNaN(amount)) return;
+            
+            const points = parseInt(amount);
+            
+            if (userAccounts[username]) {
+                if (action === 'add') {
+                    userAccounts[username].totalScore = (userAccounts[username].totalScore || 0) + points;
+                } else {
+                    userAccounts[username].totalScore = Math.max(0, (userAccounts[username].totalScore || 0) - points);
+                }
+                
+                saveUsersToBackend();
+                renderAdminPanel();
+                updateLeaderboard();
+                
+                alert(`${action === 'add' ? 'Added' : 'Removed'} ${points} points ${action === 'add' ? 'to' : 'from'} ${username}`);
+            }
+        }
+
+        function sendAdminMessage(username) {
+            const message = prompt('Enter your message to ' + username + ':');
+            if (!message) return;
+            
+            if (userAccounts[username]) {
+                if (!userAccounts[username].messages) {
+                    userAccounts[username].messages = [];
+                }
+                
+                userAccounts[username].messages.push(message);
+                saveUsersToBackend();
+                
+                alert('Message sent to ' + username);
+            }
+        }
+
+        function toggleAdmin(username, makeAdmin) {
+            if (confirm(`Are you sure you want to ${makeAdmin ? 'give admin to' : 'remove admin from'} ${username}?`)) {
+                if (userAccounts[username]) {
+                    userAccounts[username].isAdmin = makeAdmin;
+                    saveUsersToBackend();
+                    renderAdminPanel();
+                    
+                    alert(`${username} is ${makeAdmin ? 'now' : 'no longer'} an admin`);
+                }
+            }
+        }
+
+        function banUser(username, ban) {
+            if (confirm(`Are you sure you want to ${ban ? 'BAN' : 'UNBAN'} ${username}?`)) {
+                if (userAccounts[username]) {
+                    userAccounts[username].banned = ban;
+                    saveUsersToBackend();
+                    renderAdminPanel();
+                    updateLeaderboard();
+                    
+                    alert(`${username} has been ${ban ? 'banned' : 'unbanned'}`);
+                }
+            }
+        }
+
+        window.onload = async function() {
+            await loadUsersFromBackend();
+            await tryAutoLogin();
+        };
     </script>
 </body>
 </html>
