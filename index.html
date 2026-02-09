@@ -886,17 +886,25 @@
                     canvas.addEventListener('mousemove', updateSelection);
                     canvas.addEventListener('mouseup', endSelection);
                     canvas.addEventListener('mouseleave', endSelection);
+                    
+                    canvas.addEventListener('touchstart', startSelection);
+                    canvas.addEventListener('touchmove', updateSelection);
+                    canvas.addEventListener('touchend', endSelection);
+                    canvas.addEventListener('touchcancel', endSelection);
                 };
             };
             reader.readAsDataURL(file);
         }
 
         function startSelection(e) {
+            e.preventDefault();
             isSelecting = true;
             const rect = e.target.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             selectionStart = {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
+                x: clientX - rect.left,
+                y: clientY - rect.top
             };
             selectionEnd = { ...selectionStart };
             drawSelection();
@@ -904,11 +912,14 @@
 
         function updateSelection(e) {
             if (!isSelecting) return;
+            e.preventDefault();
             
             const rect = e.target.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             selectionEnd = {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
+                x: clientX - rect.left,
+                y: clientY - rect.top
             };
             drawSelection();
         }
