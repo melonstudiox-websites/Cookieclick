@@ -21,9 +21,7 @@ async function loadUserData() {
                 password: 'Abhi143$', 
                 isAdmin: true,
                 clickers: [],
-                totalScore: 0,
-                messages: [],
-                banned: false
+                totalScore: 0
             }
         };
     }
@@ -65,23 +63,13 @@ app.get('/api/auto-login', async (req, res) => {
     try {
         const users = await loadUserData();
         if (users[username]) {
-            // Check if user is banned
-            if (users[username].banned) {
-                return res.json({ 
-                    success: false,
-                    error: 'User is banned'
-                });
-            }
-            
             res.json({ 
                 success: true, 
                 user: {
                     username: username,
                     isAdmin: users[username].isAdmin || false,
                     clickers: users[username].clickers || [],
-                    totalScore: users[username].totalScore || 0,
-                    messages: users[username].messages || [],
-                    banned: users[username].banned || false
+                    totalScore: users[username].totalScore || 0
                 }
             });
         } else {
