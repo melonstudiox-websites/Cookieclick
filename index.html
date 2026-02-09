@@ -352,18 +352,6 @@
             color: #666;
         }
 
-        .logout-btn {
-            background: #666;
-            padding: 10px 20px;
-            width: auto;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-        .logout-btn:hover {
-            background: #555;
-        }
-
         .instruction {
             background: #fff3cd;
             border: 2px solid #ffc107;
@@ -399,6 +387,76 @@
             margin-top: 10px;
             font-size: 14px;
         }
+
+        .leaderboard {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #e0e0e0;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            border: 2px solid #999;
+        }
+
+        .leaderboard-item:hover {
+            background: #d0d0d0;
+            transform: translateX(5px);
+            border-color: #c41e3a;
+        }
+
+        .rank {
+            font-size: 24px;
+            font-weight: bold;
+            color: #c41e3a;
+            min-width: 50px;
+        }
+
+        .player-name {
+            flex-grow: 1;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .score {
+            font-size: 20px;
+            font-weight: bold;
+            color: #8b0000;
+        }
+
+        .user-card {
+            background: #e0e0e0;
+            border: 2px solid #999;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .user-card h4 {
+            color: #c41e3a;
+            margin-bottom: 10px;
+        }
+
+        .user-clickers {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .user-clicker-thumb {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #666;
+        }
     </style>
 </head>
 <body>
@@ -418,12 +476,13 @@
         <div id="gameScreen" class="game-screen hidden">
             <div class="user-info">
                 <span>yo <strong id="currentUser"></strong> 👋</span>
-                <button class="logout-btn" onclick="logout()">log out</button>
             </div>
 
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="switchTab('create')">make one</button>
                 <button class="nav-tab" onclick="switchTab('clickers')">ur clickers</button>
+                <button class="nav-tab" onclick="switchTab('leaderboard')">leaderboard</button>
+                <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">admin panel</button>
             </div>
 
             <!-- Create Tab -->
@@ -553,19 +612,29 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Leaderboard Tab -->
+            <div id="leaderboardTab" class="tab-content">
+                <h2>🏆 global leaderboard</h2>
+                <div id="leaderboardList" class="leaderboard"></div>
+            </div>
+
+            <!-- Admin Panel Tab -->
+            <div id="adminTab" class="tab-content">
+                <h2>🔧 admin panel</h2>
+                <div id="adminPanel">
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #c41e3a; margin-bottom: 15px;">all users</h3>
+                        <div id="usersList"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // User accounts storage (in real app this would be backend)
-        let userAccounts = {
-            'Abhinav': { 
-                password: 'Abhi143$', 
-                isAdmin: true,
-                clickers: [],
-                totalScore: 0
-            }
-        };
+        // User accounts storage - now synced with backend
+        let userAccounts = {};
 
         let gameState = {
             username: '',
@@ -582,6 +651,67 @@
                 elongationEnabled: false
             }
         };
+
+        // Load users from backend on page load
+        async function loadUsersFromBackend() {
+            try {
+                const response = await fetch('/api/users');
+                const users = await response.json();
+                userAccounts = users;
+            } catch (err) {
+                console.error('failed to load users:', err);
+            }
+        }
+
+        // Save users to backend
+        async function saveUsersToBackend() {
+            try {
+                await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userAccounts)
+                });
+            } catch (err) {
+                console.error('failed to save users:', err);
+            }
+        }
+
+        // Auto-login on page load
+        async function tryAutoLogin() {
+            const savedUsername = localStorage.getItem('currentUser');
+            if (savedUsername) {
+                try {
+                    const response = await fetch(`/api/auto-login?username=${encodeURIComponent(savedUsername)}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        gameState.username = data.user.username;
+                        gameState.isAdmin = data.user.isAdmin;
+                        gameState.clickers = data.user.clickers || [];
+                        gameState.totalScore = data.user.totalScore || 0;
+                        
+                        document.getElementById('currentUser').textContent = gameState.username;
+                        document.getElementById('loginScreen').classList.add('hidden');
+                        document.getElementById('gameScreen').classList.remove('hidden');
+                        
+                        // Show admin tab if admin
+                        if (gameState.isAdmin) {
+                            document.getElementById('adminTab').style.display = 'block';
+                        }
+                        
+                        renderClickerGallery();
+                    }
+                } catch (err) {
+                    console.error('auto-login failed:', err);
+                }
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadUsersFromBackend();
+            await tryAutoLogin();
+        });
 
         // Level system with casual names
         const LEVELS = [
@@ -661,14 +791,22 @@
                     gameState.clickers = userAccounts[username].clickers || [];
                     gameState.totalScore = userAccounts[username].totalScore || 0;
                     
+                    // Save to localStorage for auto-login
+                    localStorage.setItem('currentUser', username);
+                    
                     document.getElementById('currentUser').textContent = username;
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('gameScreen').classList.remove('hidden');
                     
+                    // Show admin tab if admin
+                    if (gameState.isAdmin) {
+                        document.getElementById('adminTab').style.display = 'block';
+                    }
+                    
                     renderClickerGallery();
                 } else {
                     // Wrong password
-                    errorEl.textContent = 'wrong password dawg';
+                    errorEl.textContent = 'dumby';
                     errorEl.style.display = 'block';
                 }
             } else {
@@ -679,10 +817,17 @@
                     clickers: [],
                     totalScore: 0
                 };
+                
+                // Save to backend
+                saveUsersToBackend();
+                
                 gameState.username = username;
                 gameState.isAdmin = false;
                 gameState.clickers = [];
                 gameState.totalScore = 0;
+                
+                // Save to localStorage for auto-login
+                localStorage.setItem('currentUser', username);
                 
                 document.getElementById('currentUser').textContent = username;
                 document.getElementById('loginScreen').classList.add('hidden');
@@ -690,37 +835,6 @@
                 
                 renderClickerGallery();
             }
-        }
-
-        function logout() {
-            // Save current user's data before logging out
-            if (gameState.username && userAccounts[gameState.username]) {
-                userAccounts[gameState.username].clickers = gameState.clickers;
-                userAccounts[gameState.username].totalScore = gameState.totalScore;
-            }
-            
-            // Reset game state completely
-            gameState = {
-                username: '',
-                isAdmin: false,
-                currentClicker: null,
-                clickers: [],
-                totalScore: 0,
-                creationData: {
-                    image: null,
-                    selectedAreas: [],
-                    emoji: '💪',
-                    selectionMode: 'single',
-                    growthEnabled: true,
-                    elongationEnabled: false
-                }
-            };
-            
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('gameScreen').classList.add('hidden');
-            document.getElementById('usernameInput').value = '';
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('loginError').style.display = 'none';
         }
 
         function switchTab(tab) {
@@ -732,6 +846,10 @@
             
             if (tab === 'clickers') {
                 renderClickerGallery();
+            } else if (tab === 'leaderboard') {
+                updateLeaderboard();
+            } else if (tab === 'admin') {
+                renderAdminPanel();
             }
         }
 
@@ -956,9 +1074,10 @@
             
             gameState.clickers.unshift(clicker);
             
-            // Save to user account
+            // Save to user account and backend
             if (userAccounts[gameState.username]) {
                 userAccounts[gameState.username].clickers = gameState.clickers;
+                saveUsersToBackend();
             }
             
             document.getElementById('clickerName').value = '';
@@ -1045,15 +1164,68 @@
             clicker.level = clicker.maxLevel;
             clicker.clicks = 2000; // Set high click count
             
-            // Save to user account
+            // Save to user account and backend
             if (userAccounts[gameState.username]) {
                 userAccounts[gameState.username].clickers = gameState.clickers;
+                saveUsersToBackend();
             }
             
             drawClicker();
             updateGameDisplay();
             
             alert('maxed out for testing 🔧');
+        }
+
+        function updateLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            
+            // Get all users and sort by total score
+            const allUsers = Object.keys(userAccounts).map(username => ({
+                name: username,
+                score: userAccounts[username].totalScore || 0
+            })).sort((a, b) => b.score - a.score);
+            
+            leaderboardList.innerHTML = allUsers.map((player, index) => `
+                <div class="leaderboard-item" style="${player.name === gameState.username ? 'background: #ffebee; border-color: #c41e3a;' : ''}">
+                    <div class="rank">#${index + 1}</div>
+                    <div class="player-name">${player.name}${player.name === gameState.username ? ' (u)' : ''}</div>
+                    <div class="score">${player.score.toLocaleString()} clicks</div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminPanel() {
+            if (!gameState.isAdmin) return;
+            
+            const usersList = document.getElementById('usersList');
+            
+            const allUsers = Object.keys(userAccounts).map(username => ({
+                username: username,
+                data: userAccounts[username]
+            }));
+            
+            usersList.innerHTML = allUsers.map(user => {
+                const clickerCount = (user.data.clickers || []).length;
+                const totalScore = user.data.totalScore || 0;
+                
+                return `
+                    <div class="user-card">
+                        <h4>${user.username} ${user.data.isAdmin ? '🔧' : ''}</h4>
+                        <p style="color: #666; margin-bottom: 10px;">
+                            ${clickerCount} clickers • ${totalScore} total clicks
+                        </p>
+                        ${clickerCount > 0 ? `
+                            <div class="user-clickers">
+                                ${user.data.clickers.map(clicker => `
+                                    <img src="${clicker.image}" 
+                                         class="user-clicker-thumb" 
+                                         title="${clicker.name} (${clicker.clicks} clicks)" />
+                                `).join('')}
+                            </div>
+                        ` : '<p style="color: #999; font-style: italic;">no clickers yet</p>'}
+                    </div>
+                `;
+            }).join('');
         }
 
         function drawClicker() {
@@ -1144,10 +1316,11 @@
             clicker.clicks += 1;
             gameState.totalScore += 1;
             
-            // Save to user account
+            // Save to user account and backend
             if (userAccounts[gameState.username]) {
                 userAccounts[gameState.username].clickers = gameState.clickers;
                 userAccounts[gameState.username].totalScore = gameState.totalScore;
+                saveUsersToBackend();
             }
             
             const effect = document.createElement('div');
