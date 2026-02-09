@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Clicker Maker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #f5f5f5;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+            border: 3px solid #c41e3a;
+        }
+
+        .login-screen, .game-screen {
+            padding: 40px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            color: #c41e3a;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: #c41e3a;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #999;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #c41e3a;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #d32f2f 0%, #a30000 100%);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #999;
+        }
+
+        .nav-tab {
+            padding: 15px 30px;
+            background: none;
+            color: #666;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            color: #c41e3a;
+            border-bottom-color: #c41e3a;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .create-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #999;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+            user-select: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .selection-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+            border-radius: 10px;
+        }
+
+        .emoji-picker {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .emoji-input {
+            width: 120px;
+            padding: 15px;
+            font-size: 40px;
+            text-align: center;
+            border: 3px solid #999;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .emoji-input:focus {
+            outline: none;
+            border-color: #c41e3a;
+        }
+
+        .emoji-suggestions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .emoji-option {
+            font-size: 32px;
+            padding: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            transition: all 0.2s;
+            background: #e0e0e0;
+        }
+
+        .emoji-option:hover {
+            transform: scale(1.15);
+            background: rgba(196, 30, 58, 0.1);
+            border-color: #c41e3a;
+        }
+
+        .clicker-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .clicker-card {
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid #999;
+        }
+
+        .clicker-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.4);
+            border-color: #c41e3a;
+        }
+
+        .clicker-card img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #666;
+        }
+
+        .clicker-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #999;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c41e3a 0%, #8b0000 100%);
+            transition: width 0.3s;
+        }
+
+        .game-area {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .click-button {
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .click-button:hover {
+            transform: scale(1.02);
+        }
+
+        .click-button:active {
+            transform: scale(0.98);
+        }
+
+        .click-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .emoji-effect {
+            position: absolute;
+            font-size: 40px;
+            animation: float-up 1s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes float-up {
+            0% { opacity: 1; transform: translateY(0) scale(0.5); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 150px;
+            border: 2px solid #999;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #c41e3a;
+        }
+
+        .user-info {
+            text-align: right;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .logout-btn {
+            background: #666;
+            padding: 10px 20px;
+            width: auto;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .logout-btn:hover {
+            background: #555;
+        }
+
+        .instruction {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .area-indicator {
+            margin-top: 10px;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 5px;
+            font-size: 14px;
+            border: 2px solid #c41e3a;
+        }
+
+        .small-btn {
+            width: auto;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-screen">
+            <h1>🎮 custom clicker thing</h1>
+            <div class="login-form">
+                <input type="text" id="usernameInput" placeholder="whats ur name tho" />
+                <input type="password" id="passwordInput" placeholder="password" />
+                <button onclick="login()">lets go</button>
+                <p id="loginError" style="color: #c41e3a; margin-top: 10px; display: none;"></p>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="game-screen hidden">
+            <div class="user-info">
+                <span>yo <strong id="currentUser"></strong> 👋</span>
+                <button class="logout-btn" onclick="logout()">log out</button>
+            </div>
+
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('create')">make one</button>
+                <button class="nav-tab" onclick="switchTab('clickers')">ur clickers</button>
+            </div>
+
+            <!-- Create Tab -->
+            <div id="createTab" class="tab-content active">
+                <h2>make ur own clicker fr</h2>
+                <div class="create-form">
+                    <div class="instruction">
+                        📸 upload pic → click n drag the part u want → pick emoji → make it
+                    </div>
+
+                    <div class="form-group">
+                        <label>1. name it somethin</label>
+                        <input type="text" id="clickerName" placeholder="like big arms or watever" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. upload ur image</label>
+                        <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)" />
+                        <div id="imagePreview" class="image-preview"></div>
+                        <div id="areaIndicator" class="area-indicator hidden"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2b. how many spots</label>
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="selectionMode" value="single" checked onchange="updateSelectionMode()">
+                                <span>just one</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="selectionMode" value="multiple" onchange="updateSelectionMode()">
+                                <span>multiple spots</span>
+                            </label>
+                        </div>
+                        <div id="multipleAreasInfo" class="hidden" style="background: #ffebee; padding: 10px; border-radius: 5px; font-size: 14px; color: #c41e3a;">
+                            💡 draw more boxes for more spots. they'll spread out when they grow
+                            <button class="small-btn" onclick="clearSelections()" style="margin-left: 10px; background: #666;">clear all</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2c. how should it change</label>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="growthEnabled" checked>
+                                <span>📏 make it bigger</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="elongationEnabled">
+                                <span>↕️ stretch it tall</span>
+                            </label>
+                        </div>
+                        <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                            u can pick both if u want lol
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>3. pick an emoji (type anything)</label>
+                        <div class="emoji-picker">
+                            <input type="text" 
+                                   class="emoji-input" 
+                                   id="emojiInput" 
+                                   placeholder="💪" 
+                                   maxlength="2"
+                                   value="💪" />
+                            <div class="emoji-suggestions">
+                                <div class="emoji-option" onclick="setEmoji('💪')">💪</div>
+                                <div class="emoji-option" onclick="setEmoji('⭐')">⭐</div>
+                                <div class="emoji-option" onclick="setEmoji('🔥')">🔥</div>
+                                <div class="emoji-option" onclick="setEmoji('❤️')">❤️</div>
+                                <div class="emoji-option" onclick="setEmoji('👀')">👀</div>
+                                <div class="emoji-option" onclick="setEmoji('🚀')">🚀</div>
+                                <div class="emoji-option" onclick="setEmoji('✨')">✨</div>
+                                <div class="emoji-option" onclick="setEmoji('🎉')">🎉</div>
+                                <div class="emoji-option" onclick="setEmoji('😂')">😂</div>
+                                <div class="emoji-option" onclick="setEmoji('🌟')">🌟</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                            just paste watever emoji u want here
+                        </p>
+                    </div>
+
+                    <button onclick="createClicker()">make it! 🎨</button>
+                </div>
+            </div>
+
+            <!-- Clickers Tab -->
+            <div id="clickersTab" class="tab-content">
+                <div id="clickersList">
+                    <div id="clickerGallery" class="clicker-gallery"></div>
+                    
+                    <div id="gameArea" class="game-area hidden">
+                        <h2 id="currentClickerName"></h2>
+                        <div id="levelBadge" class="level-badge"></div>
+                        <div id="adminControls" class="hidden" style="margin: 15px 0;">
+                            <button class="small-btn" onclick="adminMaxClicker()" style="background: #c41e3a;">
+                                🔧 ADMIN: max this clicker
+                            </button>
+                        </div>
+                        <div class="click-button" id="clickButton" onclick="handleClick()">
+                            <canvas id="clickerCanvas" width="400" height="400"></canvas>
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-label">clicks</div>
+                                <div class="stat-value" id="totalClicks">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">rank</div>
+                                <div class="stat-value" id="currentLevel">noob</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">progress</div>
+                                <div class="stat-value" id="growthPercent">0%</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="levelProgress"></div>
+                        </div>
+                        <p style="margin-top: 10px; color: #666;" id="progressText">0 / 100 til next rank</p>
+
+                        <button class="small-btn" onclick="backToGallery()">back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User accounts storage (in real app this would be backend)
+        let userAccounts = {
+            'Abhinav': { 
+                password: 'Abhi143$', 
+                isAdmin: true,
+                clickers: [],
+                totalScore: 0
+            }
+        };
+
+        let gameState = {
+            username: '',
+            isAdmin: false,
+            currentClicker: null,
+            clickers: [],
+            totalScore: 0,
+            creationData: {
+                image: null,
+                selectedAreas: [],
+                emoji: '💪',
+                selectionMode: 'single',
+                growthEnabled: true,
+                elongationEnabled: false
+            }
+        };
+
+        // Level system with casual names
+        const LEVELS = [
+            { name: 'click noob', clicks: 0 },
+            { name: 'ok clicker', clicks: 100 },
+            { name: 'good clicker', clicks: 300 },
+            { name: 'pro clicker', clicks: 600 },
+            { name: 'jeeth level', clicks: 1000 },
+            { name: 'ultra fingerer', clicks: 1500 }
+        ];
+
+        function getCurrentLevel(clicks) {
+            for (let i = LEVELS.length - 1; i >= 0; i--) {
+                if (clicks >= LEVELS[i].clicks) {
+                    return { index: i, ...LEVELS[i] };
+                }
+            }
+            return { index: 0, ...LEVELS[0] };
+        }
+
+        function getNextLevel(currentIndex) {
+            if (currentIndex < LEVELS.length - 1) {
+                return LEVELS[currentIndex + 1];
+            }
+            return null;
+        }
+
+        let isSelecting = false;
+        let selectionStart = { x: 0, y: 0 };
+        let selectionEnd = { x: 0, y: 0 };
+
+        function updateSelectionMode() {
+            const mode = document.querySelector('input[name="selectionMode"]:checked').value;
+            gameState.creationData.selectionMode = mode;
+            
+            const info = document.getElementById('multipleAreasInfo');
+            if (mode === 'multiple') {
+                info.classList.remove('hidden');
+            } else {
+                info.classList.add('hidden');
+                if (gameState.creationData.selectedAreas.length > 1) {
+                    gameState.creationData.selectedAreas = [gameState.creationData.selectedAreas[gameState.creationData.selectedAreas.length - 1]];
+                    redrawAllSelections();
+                }
+            }
+        }
+
+        function clearSelections() {
+            gameState.creationData.selectedAreas = [];
+            const canvas = document.getElementById('selectionCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            const indicator = document.getElementById('areaIndicator');
+            indicator.classList.add('hidden');
+        }
+
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const errorEl = document.getElementById('loginError');
+            
+            if (!username || !password) {
+                errorEl.textContent = 'gotta fill both fields bro';
+                errorEl.style.display = 'block';
+                return;
+            }
+            
+            // Check if username exists
+            if (userAccounts[username]) {
+                // Username exists, check password
+                if (userAccounts[username].password === password) {
+                    // Correct password - load user data
+                    gameState.username = username;
+                    gameState.isAdmin = userAccounts[username].isAdmin || false;
+                    gameState.clickers = userAccounts[username].clickers || [];
+                    gameState.totalScore = userAccounts[username].totalScore || 0;
+                    
+                    document.getElementById('currentUser').textContent = username;
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('gameScreen').classList.remove('hidden');
+                    
+                    renderClickerGallery();
+                } else {
+                    // Wrong password
+                    errorEl.textContent = 'wrong password dawg';
+                    errorEl.style.display = 'block';
+                }
+            } else {
+                // New username - create account
+                userAccounts[username] = { 
+                    password: password, 
+                    isAdmin: false,
+                    clickers: [],
+                    totalScore: 0
+                };
+                gameState.username = username;
+                gameState.isAdmin = false;
+                gameState.clickers = [];
+                gameState.totalScore = 0;
+                
+                document.getElementById('currentUser').textContent = username;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('gameScreen').classList.remove('hidden');
+                
+                renderClickerGallery();
+            }
+        }
+
+        function logout() {
+            // Save current user's data before logging out
+            if (gameState.username && userAccounts[gameState.username]) {
+                userAccounts[gameState.username].clickers = gameState.clickers;
+                userAccounts[gameState.username].totalScore = gameState.totalScore;
+            }
+            
+            // Reset game state completely
+            gameState = {
+                username: '',
+                isAdmin: false,
+                currentClicker: null,
+                clickers: [],
+                totalScore: 0,
+                creationData: {
+                    image: null,
+                    selectedAreas: [],
+                    emoji: '💪',
+                    selectionMode: 'single',
+                    growthEnabled: true,
+                    elongationEnabled: false
+                }
+            };
+            
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('usernameInput').value = '';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+            
+            if (tab === 'clickers') {
+                renderClickerGallery();
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                gameState.creationData.image = e.target.result;
+                
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `
+                    <div class="image-preview-container" id="previewContainer">
+                        <img id="previewImg" src="${e.target.result}" />
+                        <canvas id="selectionCanvas" class="selection-canvas"></canvas>
+                    </div>
+                    <p style="margin-top: 15px; color: #c41e3a; font-weight: 600;">
+                        ✨ click n drag to pick the part ✨
+                    </p>
+                    <p style="margin-top: 5px; color: #666; font-size: 14px;">
+                        rest of the pic gets darker so u can see better
+                    </p>
+                `;
+
+                const img = document.getElementById('previewImg');
+                const canvas = document.getElementById('selectionCanvas');
+                
+                img.onload = function() {
+                    canvas.width = img.offsetWidth;
+                    canvas.height = img.offsetHeight;
+                    
+                    canvas.addEventListener('mousedown', startSelection);
+                    canvas.addEventListener('mousemove', updateSelection);
+                    canvas.addEventListener('mouseup', endSelection);
+                    canvas.addEventListener('mouseleave', endSelection);
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function startSelection(e) {
+            isSelecting = true;
+            const rect = e.target.getBoundingClientRect();
+            selectionStart = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+            selectionEnd = { ...selectionStart };
+            drawSelection();
+        }
+
+        function updateSelection(e) {
+            if (!isSelecting) return;
+            
+            const rect = e.target.getBoundingClientRect();
+            selectionEnd = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+            drawSelection();
+        }
+
+        function endSelection(e) {
+            if (!isSelecting) return;
+            isSelecting = false;
+            
+            const canvas = document.getElementById('selectionCanvas');
+            const width = Math.abs(selectionEnd.x - selectionStart.x);
+            const height = Math.abs(selectionEnd.y - selectionStart.y);
+            
+            if (width > 10 && height > 10) {
+                const newArea = {
+                    x: Math.min(selectionStart.x, selectionEnd.x) / canvas.width,
+                    y: Math.min(selectionStart.y, selectionEnd.y) / canvas.height,
+                    width: width / canvas.width,
+                    height: height / canvas.height
+                };
+                
+                if (gameState.creationData.selectionMode === 'single') {
+                    gameState.creationData.selectedAreas = [newArea];
+                } else {
+                    gameState.creationData.selectedAreas.push(newArea);
+                }
+                
+                redrawAllSelections();
+                
+                const indicator = document.getElementById('areaIndicator');
+                indicator.classList.remove('hidden');
+                const count = gameState.creationData.selectedAreas.length;
+                indicator.innerHTML = `✅ <strong>${count} spot${count > 1 ? 's' : ''} picked!</strong> ${count > 1 ? 'all of em' : 'this one'} gonna change when u click`;
+            }
+        }
+
+        function redrawAllSelections() {
+            const canvas = document.getElementById('selectionCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            gameState.creationData.selectedAreas.forEach(area => {
+                const x = area.x * canvas.width;
+                const y = area.y * canvas.height;
+                const width = area.width * canvas.width;
+                const height = area.height * canvas.height;
+                
+                ctx.clearRect(x, y, width, height);
+                
+                ctx.strokeStyle = '#c41e3a';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([10, 5]);
+                ctx.strokeRect(x, y, width, height);
+                
+                const handleSize = 10;
+                ctx.fillStyle = '#c41e3a';
+                ctx.setLineDash([]);
+                ctx.fillRect(x - handleSize/2, y - handleSize/2, handleSize, handleSize);
+                ctx.fillRect(x + width - handleSize/2, y - handleSize/2, handleSize, handleSize);
+                ctx.fillRect(x - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
+                ctx.fillRect(x + width - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
+            });
+        }
+
+        function drawSelection() {
+            const canvas = document.getElementById('selectionCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            gameState.creationData.selectedAreas.forEach(area => {
+                const x = area.x * canvas.width;
+                const y = area.y * canvas.height;
+                const width = area.width * canvas.width;
+                const height = area.height * canvas.height;
+                
+                ctx.clearRect(x, y, width, height);
+                
+                ctx.strokeStyle = '#c41e3a';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([10, 5]);
+                ctx.strokeRect(x, y, width, height);
+            });
+            
+            const x = Math.min(selectionStart.x, selectionEnd.x);
+            const y = Math.min(selectionStart.y, selectionEnd.y);
+            const width = Math.abs(selectionEnd.x - selectionStart.x);
+            const height = Math.abs(selectionEnd.y - selectionStart.y);
+            
+            ctx.clearRect(x, y, width, height);
+            
+            ctx.strokeStyle = '#c41e3a';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([10, 5]);
+            ctx.strokeRect(x, y, width, height);
+            
+            const handleSize = 10;
+            ctx.fillStyle = '#c41e3a';
+            ctx.setLineDash([]);
+            
+            ctx.fillRect(x - handleSize/2, y - handleSize/2, handleSize, handleSize);
+            ctx.fillRect(x + width - handleSize/2, y - handleSize/2, handleSize, handleSize);
+            ctx.fillRect(x - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
+            ctx.fillRect(x + width - handleSize/2, y + height - handleSize/2, handleSize, handleSize);
+        }
+
+        function setEmoji(emoji) {
+            document.getElementById('emojiInput').value = emoji;
+            gameState.creationData.emoji = emoji;
+        }
+
+        function createClicker() {
+            const name = document.getElementById('clickerName').value.trim();
+            const emoji = document.getElementById('emojiInput').value.trim();
+            const growthEnabled = document.getElementById('growthEnabled').checked;
+            const elongationEnabled = document.getElementById('elongationEnabled').checked;
+            
+            if (!name) {
+                alert('u gotta name it somethin');
+                return;
+            }
+            
+            if (!gameState.creationData.image) {
+                alert('need a pic bro');
+                return;
+            }
+            
+            if (gameState.creationData.selectedAreas.length === 0) {
+                alert('pick a spot on the image first!');
+                return;
+            }
+            
+            if (!emoji) {
+                alert('pick an emoji dawg');
+                return;
+            }
+            
+            if (!growthEnabled && !elongationEnabled) {
+                alert('gotta enable atleast one thing to change!');
+                return;
+            }
+            
+            const clicker = {
+                id: Date.now().toString(),
+                name: name,
+                image: gameState.creationData.image,
+                selectedAreas: [...gameState.creationData.selectedAreas],
+                emoji: emoji,
+                growthEnabled: growthEnabled,
+                elongationEnabled: elongationEnabled,
+                clicks: 0,
+                level: 0,
+                maxLevel: 20
+            };
+            
+            gameState.clickers.unshift(clicker);
+            
+            // Save to user account
+            if (userAccounts[gameState.username]) {
+                userAccounts[gameState.username].clickers = gameState.clickers;
+            }
+            
+            document.getElementById('clickerName').value = '';
+            document.getElementById('imageUpload').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('areaIndicator').classList.add('hidden');
+            document.getElementById('emojiInput').value = '💪';
+            document.getElementById('growthEnabled').checked = true;
+            document.getElementById('elongationEnabled').checked = false;
+            document.querySelector('input[name="selectionMode"][value="single"]').checked = true;
+            updateSelectionMode();
+            gameState.creationData = { 
+                image: null, 
+                selectedAreas: [], 
+                emoji: '💪',
+                selectionMode: 'single',
+                growthEnabled: true,
+                elongationEnabled: false
+            };
+            
+            alert(`🎉 "${name}" made successfully bro!`);
+            switchTab('clickers');
+        }
+
+        function renderClickerGallery() {
+            const gallery = document.getElementById('clickerGallery');
+            
+            if (gameState.clickers.length === 0) {
+                gallery.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">no clickers yet. go make one in the "make one" tab</p>';
+                return;
+            }
+            
+            gallery.innerHTML = gameState.clickers.map(clicker => {
+                const transformTypes = [];
+                if (clicker.growthEnabled) transformTypes.push('📏 bigger');
+                if (clicker.elongationEnabled) transformTypes.push('↕️ taller');
+                const transformText = transformTypes.join(' + ');
+                
+                const levelInfo = getCurrentLevel(clicker.clicks);
+                
+                return `
+                <div class="clicker-card" onclick="selectClicker('${clicker.id}')">
+                    <img src="${clicker.image}" />
+                    <div class="clicker-name">${clicker.name}</div>
+                    <div style="font-size: 13px; color: #666; margin: 5px 0;">
+                        ${clicker.emoji} • ${clicker.selectedAreas.length} spot${clicker.selectedAreas.length > 1 ? 's' : ''}
+                    </div>
+                    <div style="font-size: 12px; color: #888;">
+                        ${transformText}
+                    </div>
+                    <div class="level-badge" style="margin-top: 10px; font-size: 12px;">
+                        ${levelInfo.name}
+                    </div>
+                    <div style="font-size: 14px; color: #666; margin-top: 5px;">
+                        ${clicker.clicks} clicks
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function selectClicker(clickerId) {
+            gameState.currentClicker = clickerId;
+            const clicker = gameState.clickers.find(c => c.id === clickerId);
+            
+            document.getElementById('clickerGallery').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('currentClickerName').textContent = clicker.name;
+            
+            // Show admin controls if user is admin
+            if (gameState.isAdmin) {
+                document.getElementById('adminControls').classList.remove('hidden');
+            } else {
+                document.getElementById('adminControls').classList.add('hidden');
+            }
+            
+            drawClicker();
+            updateGameDisplay();
+        }
+
+        function adminMaxClicker() {
+            if (!gameState.isAdmin || !gameState.currentClicker) return;
+            
+            const clicker = gameState.clickers.find(c => c.id === gameState.currentClicker);
+            clicker.level = clicker.maxLevel;
+            clicker.clicks = 2000; // Set high click count
+            
+            // Save to user account
+            if (userAccounts[gameState.username]) {
+                userAccounts[gameState.username].clickers = gameState.clickers;
+            }
+            
+            drawClicker();
+            updateGameDisplay();
+            
+            alert('maxed out for testing 🔧');
+        }
+
+        function drawClicker() {
+            const clicker = gameState.clickers.find(c => c.id === gameState.currentClicker);
+            if (!clicker) return;
+
+            const canvas = document.getElementById('clickerCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            const img = new Image();
+            img.onload = function() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // Calculate spreading factor for multiple areas
+                const spreadFactor = clicker.selectedAreas.length > 1 ? 
+                    (clicker.level / clicker.maxLevel) * 0.3 : 0; // Up to 30% spread
+                
+                clicker.selectedAreas.forEach((area, index) => {
+                    let widthFactor = 1;
+                    let heightFactor = 1;
+                    
+                    if (clicker.growthEnabled) {
+                        const growthAmount = (clicker.level / clicker.maxLevel) * 2;
+                        widthFactor += growthAmount;
+                        heightFactor += growthAmount;
+                    }
+                    
+                    if (clicker.elongationEnabled) {
+                        const elongationAmount = (clicker.level / clicker.maxLevel) * 2;
+                        heightFactor += elongationAmount;
+                    }
+                    
+                    // Calculate center point of the area
+                    let centerX = (area.x + area.width / 2) * canvas.width;
+                    let centerY = (area.y + area.height / 2) * canvas.height;
+                    
+                    // Apply spreading if multiple areas
+                    if (clicker.selectedAreas.length > 1 && clicker.level > 0) {
+                        // Calculate overall center of all areas
+                        const overallCenterX = clicker.selectedAreas.reduce((sum, a) => 
+                            sum + (a.x + a.width / 2), 0) / clicker.selectedAreas.length * canvas.width;
+                        const overallCenterY = clicker.selectedAreas.reduce((sum, a) => 
+                            sum + (a.y + a.height / 2), 0) / clicker.selectedAreas.length * canvas.height;
+                        
+                        // Push area away from overall center
+                        const dx = centerX - overallCenterX;
+                        const dy = centerY - overallCenterY;
+                        centerX += dx * spreadFactor;
+                        centerY += dy * spreadFactor;
+                    }
+                    
+                    const areaWidth = area.width * canvas.width;
+                    const areaHeight = area.height * canvas.height;
+                    
+                    // Get original position for extraction
+                    const origX = area.x * canvas.width;
+                    const origY = area.y * canvas.height;
+                    
+                    const selectedPart = ctx.getImageData(origX, origY, areaWidth, areaHeight);
+                    
+                    const newWidth = areaWidth * widthFactor;
+                    const newHeight = areaHeight * heightFactor;
+                    
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = areaWidth;
+                    tempCanvas.height = areaHeight;
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCtx.putImageData(selectedPart, 0, 0);
+                    
+                    // Draw centered on the (potentially spread) center point
+                    ctx.drawImage(tempCanvas, 
+                        centerX - newWidth / 2, 
+                        centerY - newHeight / 2, 
+                        newWidth, 
+                        newHeight);
+                });
+            };
+            img.src = clicker.image;
+        }
+
+        function handleClick() {
+            if (!gameState.currentClicker) return;
+            
+            const clicker = gameState.clickers.find(c => c.id === gameState.currentClicker);
+            
+            clicker.clicks += 1;
+            gameState.totalScore += 1;
+            
+            // Save to user account
+            if (userAccounts[gameState.username]) {
+                userAccounts[gameState.username].clickers = gameState.clickers;
+                userAccounts[gameState.username].totalScore = gameState.totalScore;
+            }
+            
+            const effect = document.createElement('div');
+            effect.className = 'emoji-effect';
+            effect.textContent = clicker.emoji;
+            effect.style.left = Math.random() * 300 + 50 + 'px';
+            effect.style.top = Math.random() * 300 + 50 + 'px';
+            document.getElementById('clickButton').appendChild(effect);
+            setTimeout(() => effect.remove(), 1000);
+            
+            const clicksNeeded = 50 * (clicker.level + 1);
+            if (clicker.clicks >= clicksNeeded && clicker.level < clicker.maxLevel) {
+                clicker.level++;
+                drawClicker();
+                
+                const canvas = document.getElementById('clickerCanvas');
+                canvas.style.transform = 'scale(1.05)';
+                setTimeout(() => canvas.style.transform = 'scale(1)', 300);
+                
+                if (clicker.level === clicker.maxLevel) {
+                    const transformations = [];
+                    if (clicker.growthEnabled) transformations.push('3x wider');
+                    if (clicker.elongationEnabled) transformations.push('3x taller');
+                    const message = transformations.join(' n ');
+                    alert(`🏆 yo u maxed out ${clicker.name}! the spot${clicker.selectedAreas.length > 1 ? 's are' : ' is'} now ${message}!`);
+                }
+            }
+            
+            updateGameDisplay();
+        }
+
+        function updateGameDisplay() {
+            if (!gameState.currentClicker) return;
+            
+            const clicker = gameState.clickers.find(c => c.id === gameState.currentClicker);
+            const levelInfo = getCurrentLevel(clicker.clicks);
+            const nextLevel = getNextLevel(levelInfo.index);
+            
+            document.getElementById('totalClicks').textContent = clicker.clicks;
+            document.getElementById('currentLevel').textContent = levelInfo.name;
+            document.getElementById('levelBadge').textContent = levelInfo.name;
+            
+            const growthPercent = Math.round((clicker.level / clicker.maxLevel) * 200);
+            document.getElementById('growthPercent').textContent = growthPercent + '%';
+            
+            if (nextLevel) {
+                const clicksNeeded = nextLevel.clicks;
+                const progress = (clicker.clicks / clicksNeeded) * 100;
+                document.getElementById('levelProgress').style.width = Math.min(progress, 100) + '%';
+                document.getElementById('progressText').textContent = `${clicker.clicks} / ${clicksNeeded} til ${nextLevel.name}`;
+            } else {
+                document.getElementById('levelProgress').style.width = '100%';
+                document.getElementById('progressText').textContent = 'maxed out bro 🔥';
+            }
+        }
+
+        function backToGallery() {
+            document.getElementById('clickerGallery').classList.remove('hidden');
+            document.getElementById('gameArea').classList.add('hidden');
+            renderClickerGallery();
+        }
+    </script>
+</body>
+</html>
